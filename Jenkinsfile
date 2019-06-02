@@ -43,6 +43,7 @@ spec:
                git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
                git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
                container(name: 'kaniko', shell: '/busybox/sh'){
+                    echo pwd()
                     sh '''#!/busybox/sh
                     /kaniko/executor --dockerfile=./Dockerfile --context=./CLUS19-K8S --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
                     '''
