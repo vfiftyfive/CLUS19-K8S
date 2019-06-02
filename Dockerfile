@@ -13,6 +13,7 @@
 # limitations under the License.
 
 FROM golang:1.10.0
+ENV https_proxy proxy.esl.cisco.com:80
 RUN go get github.com/codegangsta/negroni \
            github.com/gorilla/mux \
            github.com/xyproto/simpleredis
