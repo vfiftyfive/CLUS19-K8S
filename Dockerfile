@@ -19,7 +19,7 @@ RUN go get github.com/codegangsta/negroni \
            github.com/xyproto/simpleredis
 WORKDIR /app
 RUN ls
-ADD ./main.go .
+COPY ./main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 FROM scratch
