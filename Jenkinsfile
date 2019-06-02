@@ -40,7 +40,7 @@ spec:
 """){
      node(label) {
           stage('Build with Kaniko') {
-               git 'https://github.com/jenkins/docker-jnlp-slave.git'
+               git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
                container(name: 'kaniko', shell: '/busybox/sh'){
                     sh '''#!/busybox/sh
                     /kaniko/executor --dockerfile=test_image/Dockerfile --context=s3://nvermand/kaniko.tar.gz --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
