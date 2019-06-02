@@ -1,3 +1,4 @@
+  
 def label = "kaniko-${UUID.randomUUID().toString()}"
 
 podTemplate(
@@ -12,10 +13,11 @@ metadata:
 spec:
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:latest
-    args: ["--dockerfile=test_image/Dockerfile",
-            "--context=s3://nvermand/kaniko.tar.gz",
-            "--destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest"]
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
     volumeMounts:
       - name: aws-secret
         mountPath: /root/.aws/
@@ -39,8 +41,12 @@ spec:
      node(label) {
           stage('Build with Kaniko') {
                git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
-               container(name: 'kaniko'){}
+               container(name: 'kaniko'){
+                    sh '''#!/busybox/sh
+                    /kaniko/executor --dockerfile=test_image/Dockerfile --context=s3://nvermand/kaniko.tar.gz --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
+                    '''
+               }
           }
      }
 }
-     
+   
