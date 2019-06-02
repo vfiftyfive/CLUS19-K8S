@@ -35,5 +35,12 @@ spec:
     - name: aws-secret
       secret:
         secretName: aws-secret
-"""){}
+"""){
+     node(label) {
+          stage('Build with Kaniko') {
+               git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
+               container(name: 'kaniko'){}
+          }
+     }
+}
      
