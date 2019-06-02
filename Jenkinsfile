@@ -41,9 +41,13 @@ spec:
      node(label) {
           stage('Build with Kaniko') {
                git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
+               git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
                container(name: 'kaniko', shell: '/busybox/sh'){
                     sh '''#!/busybox/sh
-                    /kaniko/executor --dockerfile=test_image/Dockerfile --context=s3://nvermand/kaniko.tar.gz --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
+                    ls
+                    ''' 
+                    sh '''#!/busybox/sh
+                    /kaniko/executor --dockerfile=./Dockerfile --context=./CLUS19-K8S --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
                     '''
                }
           }
