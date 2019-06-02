@@ -35,11 +35,5 @@ spec:
     - name: aws-secret
       secret:
         secretName: aws-secret
-""") {
-     node(label) {
-          stage('Build with Kaniko') {
-               container(name: 'kaniko'){}
-          }
-     }
-}
+""")
      
