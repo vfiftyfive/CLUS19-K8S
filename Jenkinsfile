@@ -35,5 +35,5 @@ spec:
     - name: aws-secret
       secret:
         secretName: aws-secret
-""")
+"""){}
      
