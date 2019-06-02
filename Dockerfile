@@ -18,7 +18,6 @@ RUN go get github.com/codegangsta/negroni \
            github.com/gorilla/mux \
            github.com/xyproto/simpleredis
 WORKDIR /app
-RUN ls
 COPY ./main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
