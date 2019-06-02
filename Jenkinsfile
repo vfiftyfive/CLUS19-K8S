@@ -38,7 +38,7 @@ spec:
 """) {
      node(label) {
           stage('Build with Kaniko') {
-               git 'https://github.com/jenkinsci/docker-jnlp-slave.git
+               git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
                container(name: 'kaniko'){}
           }
      }
