@@ -45,7 +45,7 @@ spec:
                container(name: 'kaniko', shell: '/busybox/sh'){
                     echo pwd()
                     sh '''#!/busybox/sh
-                    /kaniko/executor --dockerfile=./Dockerfile --context=./CLUS19-K8S --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
+                    /kaniko/executor --dockerfile=./Dockerfile --context=./CLUS19-K8S --cache=true --single-snapshot--destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
                     '''
                }
           }
