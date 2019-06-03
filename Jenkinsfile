@@ -57,8 +57,7 @@ spec:
       def kImage = docker.build("kubectl:${env.BUILD_ID}", "./Helper")
 
       kImage.inside {
-        sh 'echo `pwd`'
-        sh 'KUBECONFIG=`pwd`/Helper/config kubectl get pod -n jenkins'
+        sh 'KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml'
       }
     }
   }
