@@ -54,7 +54,7 @@ spec:
 
     stage('Deploy app pods'){
       git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
-      def kImage = docker.build("kubectl:${env.BUILD_ID}", "./Helper/Dockerfile")
+      def kImage = docker.build("kubectl:${env.BUILD_ID}", "./Helper")
 
       kImage.inside {
         sh 'echo Hello'
