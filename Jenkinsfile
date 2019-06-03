@@ -12,6 +12,8 @@ metadata:
   name: kaniko
 spec:
   containers:
+  - name: kubectl
+    image: bitnami/kubectl:1.12
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
@@ -46,8 +48,11 @@ spec:
         sh '''#!/busybox/sh
         /kaniko/executor --dockerfile=`pwd`/Dockerfile --context=`pwd` --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
         '''
-        }     
+      }     
     }
+  }
+
+  node('slave-1') {
 
     stage('Deploy app pods'){
       sh 'echo hello'
