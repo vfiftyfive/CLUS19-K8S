@@ -12,8 +12,6 @@ metadata:
   name: kaniko
 spec:
   containers:
-  - name: kubectl
-    image: bitnami/kubectl:1.12
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
@@ -55,7 +53,11 @@ spec:
   node('slave-1') {
 
     stage('Deploy app pods'){
-      sh 'echo hello'
+      def kImage = docker.build("kubectl:${env.BUILD_ID}", "./Helper/Dockerfile")
+
+      kImage.inside {
+        sh 'echo Hello'
+      }
     }
   }
 }
