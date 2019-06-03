@@ -53,6 +53,7 @@ spec:
   node('slave-1') {
 
     stage('Deploy app pods'){
+      git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
       def kImage = docker.build("kubectl:${env.BUILD_ID}", "./Helper/Dockerfile")
 
       kImage.inside {
