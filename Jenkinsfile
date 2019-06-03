@@ -58,7 +58,7 @@ podTemplate(
   cloud: 'kubernetes',
   image: 'alpine:latest'
   ) {
-    node(label) {
+    node(labelK) {
 
       stage('Deploy pods') {
         git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
