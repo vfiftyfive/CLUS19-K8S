@@ -66,6 +66,7 @@ podTemplate(
         git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
         container(name: 'alpine', shell: '/bin/sh') {
           sh '''
+          apk --no-cache add curl 
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
           '''
         }
