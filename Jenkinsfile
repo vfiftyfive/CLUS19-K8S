@@ -56,7 +56,7 @@ podTemplate(
   name: 'kubectl',
   label: labelK,
   cloud: kubernetes,
-  image: alpine:latest
+  image: 'alpine:latest'
   ) {
     node(label) {
 
