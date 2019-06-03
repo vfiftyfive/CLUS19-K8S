@@ -63,7 +63,7 @@ podTemplate(
       ttyEnabled: true, 
       command: 'cat',
       envVars: [
-        envVar(key: 'HTTPS_PROXY', value: 'http://proxy.esl.cisco.com:80')
+        envVar(key: 'https_proxy', value: 'http://proxy.esl.cisco.com:80')
       ]
     )
   ]
@@ -75,7 +75,7 @@ podTemplate(
         container(name: 'alpine', shell: '/bin/sh') {
           sh '''
           apk --no-cache add curl 
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
+          https_proxy='http://proxy.esl.cisco.com:80' curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
           KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
           '''
         }
