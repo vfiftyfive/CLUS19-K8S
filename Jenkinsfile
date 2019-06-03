@@ -66,6 +66,7 @@ podTemplate(
           chmod +x `pwd`/kubectl
           mv `pwd`/kubectl /bin/kubectl
           echo $no_proxy
+          echo $NO_PROXY
           KUBECONFIG=`pwd`/Helper/config kubectl get pod
           '''
         }
