@@ -56,16 +56,18 @@ podTemplate(
   name: 'kubectl',
   label: labelK,
   cloud: 'kubernetes',
-  image: 'alpine:latest'
+  containers: [
+    containerTemplate(name: 'alpine', image: 'alpine:latest', ttyEnabled: true, command: 'cat')
+  ]
   ) {
     node(labelK) {
 
       stage('Deploy pods') {
         git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
         container(name: 'kubectl', shell: '/bin/sh') {
-          sh '''#!/busybox/sh
+          sh '''
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
-          '''
+          ''''
         }
       }
     }
