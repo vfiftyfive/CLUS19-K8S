@@ -57,7 +57,15 @@ podTemplate(
   label: labelK,
   cloud: 'kubernetes',
   containers: [
-    containerTemplate(name: 'alpine', image: 'alpine:latest', ttyEnabled: true, command: 'cat')
+    containerTemplate(
+      name: 'alpine', 
+      image: 'alpine:latest', 
+      ttyEnabled: true, 
+      command: 'cat',
+      envVars: [
+        envVar(key: 'HTTPS_PROXY', value: 'http://proxy.esl.cisco.com:80')
+      ]
+    )
   ]
   ) {
     node(labelK) {
@@ -68,6 +76,7 @@ podTemplate(
           sh '''
           apk --no-cache add curl 
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
+          KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
           '''
         }
       }
