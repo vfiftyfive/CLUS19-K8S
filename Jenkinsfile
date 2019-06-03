@@ -55,7 +55,7 @@ def labelK = "kubectl-${UUID.randomUUID().toString()}"
 podTemplate(
   name: 'kubectl',
   label: labelK,
-  cloud: kubernetes,
+  cloud: 'kubernetes',
   image: 'alpine:latest'
   ) {
     node(label) {
