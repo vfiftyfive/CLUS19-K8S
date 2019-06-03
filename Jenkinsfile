@@ -50,7 +50,7 @@ spec:
     }
 
     stage('Deploy app pods'){
-      sh 'hello'
+      sh 'echo hello'
     }
   }
 }
