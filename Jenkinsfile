@@ -44,7 +44,7 @@ spec:
             git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
             container(name: 'kaniko', shell: '/busybox/sh'){
                 sh '''#!/busybox/sh
-                kaniko/executor --dockerfile=`pwd`/Dockerfile --context=`pwd` --cache=true --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
+                /kaniko/executor --dockerfile=`pwd`/Dockerfile --context=`pwd` --cache=true --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
                 '''
             }     
         }
