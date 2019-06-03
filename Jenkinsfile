@@ -53,7 +53,7 @@ podTemplate(
 
 label = "kubectl-${UUID.randomUUID().toString()}"
 podTemplate(
-  name: 'kubectl'
+  name: 'kubectl',
   label: label
   ) {
     node(label) {
