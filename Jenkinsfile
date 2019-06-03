@@ -70,7 +70,7 @@ podTemplate(
           '''
         }
       }
-    }
+  }
 
 //   node('slave-1') {
 
@@ -83,4 +83,4 @@ podTemplate(
 //       }
 //     }
 //   }
-}
+
