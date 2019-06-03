@@ -56,7 +56,6 @@ podTemplate(
           '''
         }     
       }
-    }
 
       stage('Deploy pods') {
         git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
@@ -71,6 +70,7 @@ podTemplate(
         }
       }
   }
+}
 
 //   node('slave-1') {
 
