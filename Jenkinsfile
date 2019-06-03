@@ -28,6 +28,14 @@ podTemplate(
       envFrom:
         - configMapRef:
             name: proxy
+    - name: alpine
+      image: alpine:latest
+      command:
+      - cat
+      tty: true
+      envFrom:
+        - configMapRef:
+            name: proxy
     restartPolicy: Never
     volumes:
       - name: docker-config
@@ -50,43 +58,19 @@ podTemplate(
       }
     }
 
-def labelK = "kubectl-${UUID.randomUUID().toString()}"
-podTemplate(
-  name: 'kubectl',
-  label: labelK,
-  cloud: 'kubernetes',
-  yaml: '''
-  apiVersion: v1
-  kind: Pod
-  metadata:
-    name: kubectl
-  spec:
-    containers:
-    - name: alpine
-      image: alpine:latest
-      command:
-      - cat
-      tty: true
-      envFrom:
-        - configMapRef:
-            name: proxy
-    restartPolicy: Never
-  '''
-  ) {
-    node(labelK) {
-
       stage('Deploy pods') {
         git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
         container(name: 'alpine', shell: '/bin/sh') {
           sh '''
           apk --no-cache add curl 
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.8/bin/linux/amd64/kubectl
+          chmod +x `pwd`/kubectl
+          mv `pwd`/kubectl /bin/kubectl
           KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
           '''
         }
       }
     }
-  }
 
 //   node('slave-1') {
 
