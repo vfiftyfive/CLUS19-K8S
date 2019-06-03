@@ -14,7 +14,6 @@ podTemplate(
     containers:
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
-      imagePullPolicy: Always
       command:
       - /busybox/cat
       tty: true
@@ -56,17 +55,23 @@ podTemplate(
   name: 'kubectl',
   label: labelK,
   cloud: 'kubernetes',
-  containers: [
-    containerTemplate(
-      name: 'alpine', 
-      image: 'alpine:latest', 
-      ttyEnabled: true, 
-      command: 'cat',
-      envVars: [
-        envVar(key: 'https_proxy', value: 'http://proxy.esl.cisco.com:80')
-      ]
-    )
-  ]
+  yaml: '''
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: kubectl
+  spec:
+    containers:
+    - name: alpine
+      image: alpine:latest
+      command:
+      - cat
+      tty: true
+      envFrom:
+        - configMapRef:
+            name: proxy
+    restartPolicy: Never
+  '''
   ) {
     node(labelK) {
 
@@ -75,7 +80,7 @@ podTemplate(
         container(name: 'alpine', shell: '/bin/sh') {
           sh '''
           apk --no-cache add curl 
-          https_proxy='http://proxy.esl.cisco.com:80' curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
           KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
           '''
         }
