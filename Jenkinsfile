@@ -12,8 +12,6 @@ metadata:
   name: kaniko
 spec:
   containers:
-  - name: kubectl
-    image: bitnami/kubectl:1.12
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     imagePullPolicy: Always
