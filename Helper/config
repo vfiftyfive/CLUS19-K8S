@@ -11,7 +11,8 @@ clusters:
   name: kubernetes
 contexts:
 - context:
-    cluster: kubernetest
+    cluster: kubernetes
     user: jenkins
+    namespace: jenkins
   name: jenkins-context
 current-context: jenkins-context

@@ -57,7 +57,8 @@ spec:
       def kImage = docker.build("kubectl:${env.BUILD_ID}", "./Helper")
 
       kImage.inside {
-        sh 'KUBECONFIG=./Helper/config kubectl get pod -n jenkins'
+        sh 'echo `pwd`'
+        sh 'KUBECONFIG=`pwd`/Helper/config kubectl get pod -n jenkins'
       }
     }
   }
