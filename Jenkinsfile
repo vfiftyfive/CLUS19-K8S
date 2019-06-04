@@ -4,6 +4,8 @@ def label = "kaniko-${UUID.randomUUID().toString()}"
 node ('master') {
 
   stage('Provision ACI constructs') {
+
+    def scmVars = checkout scm
     sh '''#!/bin/bash
     ansible-playbook $WORKSPACE/aci_prov.yaml
     '''
@@ -59,7 +61,6 @@ podTemplate(
 
       stage('Build with Kaniko') {
 
-        git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
         container(name: 'kaniko', shell: '/busybox/sh'){
           sh """#!/busybox/sh
           /kaniko/executor --dockerfile=`pwd`/Dockerfile --context=`pwd` --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
