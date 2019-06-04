@@ -74,7 +74,7 @@ podTemplate(
 
       stage('Run Integration Test') {
         container(name: 'alpine', shell: '/bin/sh') {
-          def ret = sh(script: '$WORKSPACE/Helper/kube.sh', returnStdout: true)
+          def ret = sh(script: 'chmod u+x $WORKSPACE/Helper/kube.sh && $WORKSPACE/Helper/kube.sh', returnStdout: true)
           println ret
         }
       }
