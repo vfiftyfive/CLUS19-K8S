@@ -5,7 +5,6 @@ node ('master') {
 
   stage('Prepare Build') {
 
-    def scmVars = checkout scm
     sh '''#!/bin/bash
     ansible-playbook $WORKSPACE/aci_prov.yaml
     '''
