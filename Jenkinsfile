@@ -78,7 +78,8 @@ podTemplate(
             script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
             returnStdout: true
           )
-          if ( ret == 'success') {
+          println ret
+          if ( ret == 'success' ) {
             currentBuild.result = 'FAILURE'
           }
         }
