@@ -51,7 +51,6 @@ podTemplate(
 
         git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
         container(name: 'kaniko', shell: '/busybox/sh'){
-          sh """#!/busybox/sh
           /kaniko/executor --dockerfile=`pwd`/Dockerfile --context=`pwd` --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
           """
         }     
@@ -67,7 +66,7 @@ podTemplate(
           mv `pwd`/kubectl /bin/kubectl
           KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
           sleep 30
-          kubectl exec -it \$(kubectl get pod | grep guest | cut -d " " -f 1 | head -n 1) -- /home/integrationTest.sh
+          `pwd`/Helper/kubeSendApp.sh
           """
         }
       }
