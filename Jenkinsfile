@@ -65,9 +65,8 @@ podTemplate(
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.8/bin/linux/amd64/kubectl
           chmod +x `pwd`/kubectl
           mv `pwd`/kubectl /bin/kubectl
-          KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
-          sleep 30
-          chmod u+x `pwd`/Helper/kubeSendApp.sh && `pwd`/Helper/kubeSendApp.sh
+          export KUBECONFIG=`pwd`/Helper/config 
+          chmod u+x `pwd`/Helper/kube.sh && `pwd`/Helper/kube.sh
           """
         }
       }
