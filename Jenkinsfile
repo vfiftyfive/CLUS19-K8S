@@ -45,7 +45,8 @@ podTemplate(
         secret:
           secretName: aws-secret
   """) {
-    node(label) {
+  node(label) {
+    withEnv(['KUBECONFIG=$WORKSPACE/Helper/config kubectl']) {
 
       stage('Build with Kaniko') {
 
@@ -58,18 +59,25 @@ podTemplate(
       }
 
       stage('Deploy pods') {
-        git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
+      
         container(name: 'alpine', shell: '/bin/sh') {
           sh """
           apk --no-cache add curl 
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.8/bin/linux/amd64/kubectl
           chmod +x `pwd`/kubectl
           mv `pwd`/kubectl /bin/kubectl
-          export KUBECONFIG=`pwd`/Helper/config 
-          chmod u+x `pwd`/Helper/kube.sh && `pwd`/Helper/kube.sh
+          apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
+          sleep 30
           """
         }
       }
-  }
-}
+
+      stage('Run Integration Test') {
+        container(name: 'alpine', shell: '/bin/sh') {
+          def ret = sh(script: '$WORKSPACE/Helper/kube.sh', returnStdout: true)
+          println ret
+        }
+      }
+    }
+  } 
 
