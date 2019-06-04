@@ -51,7 +51,7 @@ podTemplate(
 
         git 'https://github.com/vfiftyfive/CLUS19-K8S.git'
         container(name: 'kaniko', shell: '/busybox/sh'){
-          sh """
+          sh """#!/busybox/sh
           /kaniko/executor --dockerfile=`pwd`/Dockerfile --context=`pwd` --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
           """
         }     
