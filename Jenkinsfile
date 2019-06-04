@@ -1,6 +1,15 @@
   
 def label = "kaniko-${UUID.randomUUID().toString()}"
 
+node ('master') {
+
+  stage('Provision ACI constructs') {
+    sh '''#!/bin/bash
+    ansible-playbook $WORKSPACE/aci_prov.yaml
+    '''
+  } 
+}
+
 podTemplate(
   name: 'kaniko',
   label: label,
@@ -77,8 +86,7 @@ podTemplate(
           def ret= sh(
             script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
             returnStdout: true
-          )
-          println ret
+          ).trim()
           if ( ret == 'success' ) {
             currentBuild.result = 'FAILURE'
           }
@@ -86,5 +94,15 @@ podTemplate(
       }
     }
   }
-} 
+}
+
+node('master') {
+
+  stage('Clean-up') {
+    sh '''#!/bin/bash
+    ansible-playbook $WORKSPACE/aci_del.yaml
+    '''
+  }
+}
+
 
