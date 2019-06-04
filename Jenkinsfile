@@ -74,7 +74,13 @@ podTemplate(
 
       stage('Run Integration Test') {
         container(name: 'alpine', shell: '/bin/sh') {
-          sh 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh'
+          def ret= sh(
+            script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
+            returnStdout: true
+          )
+          if ( ret == 'success') {
+            currentBuild.result = 'FAILURE'
+          }
         }
       }
     }
