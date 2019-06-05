@@ -75,7 +75,9 @@ podTemplate(
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.8/bin/linux/amd64/kubectl
           chmod +x `pwd`/kubectl
           mv `pwd`/kubectl /bin/kubectl
-          KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
+          KUBECONFIG=`pwd`/Helper/config kubectl create namespace devBuild
+          KUBECONFIG=`pwd`/Helper/config kubectl annotate namespace voting-app opflex.cisco.com/endpoint-group='{"tenant":"kubecluster_demo_01","app-profile":"kubernetes","name":"devBuild"}'
+          KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml -n devBuild
           sleep 30
           """
         }
