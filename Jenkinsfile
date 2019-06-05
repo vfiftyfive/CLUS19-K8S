@@ -6,7 +6,7 @@ node ('master') {
   stage('Prepare Build') {
 
     sh '''#!/bin/bash
-    ansible-playbook $WORKSPACE/../ansible/aci_prov.yaml
+    ansible-playbook $WORKSPACE/../../ansible/aci_prov.yaml
     '''
   } 
 }
@@ -102,7 +102,7 @@ node('master') {
 
   stage('Clean-up') {
     sh '''#!/bin/bash
-    ansible-playbook $WORKSPACE/../ansible/aci_del.yaml
+    ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
     '''
   }
 }
