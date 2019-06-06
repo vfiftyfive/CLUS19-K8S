@@ -13,6 +13,6 @@ contexts:
 - context:
     cluster: kubernetes
     user: jenkins
-    namespace: jenkins
+    namespace: devbuild
   name: jenkins-context
 current-context: jenkins-context
