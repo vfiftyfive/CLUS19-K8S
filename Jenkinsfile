@@ -3,14 +3,8 @@ def label = "kaniko-${UUID.randomUUID().toString()}"
 
 node ('master') {
 
-<<<<<<< HEAD
-  stage('Provision ACI constructs') {
-
-    def scmVars = checkout scm
-=======
   stage('Deploy ACI objects') {
 
->>>>>>> dev
     sh '''#!/bin/bash
     ansible-playbook $WORKSPACE/../../ansible/aci_prov.yaml
     '''
@@ -65,11 +59,7 @@ podTemplate(
     withEnv(['KUBECONFIG=$WORKSPACE/Helper/config']) {
 
       stage('Build with Kaniko') {
-<<<<<<< HEAD
-
-=======
         checkout scm
->>>>>>> dev
         container(name: 'kaniko', shell: '/busybox/sh'){
           sh """#!/busybox/sh
           /kaniko/executor --dockerfile=`pwd`/Dockerfile --context=`pwd` --destination=506539650117.dkr.ecr.us-west-1.amazonaws.com/nvermand:latest
@@ -112,18 +102,26 @@ podTemplate(
 
 node('master') {
 
-  stage('Clean-up ACI') {
+  stage('Clean-up ACI and kubernetes') {
     sh '''#!/bin/bash
     ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
     '''
-  }
+  
+    container(name: 'alpine', shell: '/bin/sh') {
+      sh '''#!/bin/sh
+      KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
+      '''
+    }
 
-  stage('Merge dev to prod') {
-    withCredentials([usernamePassword(credentialsId: '75f66db3-7769-4eb9-b8ae-9090f54997e0', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
-      sh('''
-          git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
-          git push origin dev:master
-      ''')
+    if ( currentBuild.result == 'SUCCESS' ) {
+      stage('Merge dev to prod') {
+        withCredentials([usernamePassword(credentialsId: '75f66db3-7769-4eb9-b8ae-9090f54997e0', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
+          sh('''
+              git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
+              git push origin dev:master
+          ''')
+        }
+      }
     }
   }
 }
