@@ -94,6 +94,9 @@ podTemplate(
           if ( ret == 'fail' ) {
             currentBuild.result = 'FAILURE'
           }
+          sh '''#!/bin/sh
+          KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
+          '''
         }
       }
     }
@@ -102,16 +105,10 @@ podTemplate(
 
 node('master') {
 
-  stage('Clean-up ACI and kubernetes') {
+  stage('Clean-up ACI') {
     sh '''#!/bin/bash
     ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
     '''
-  
-    container(name: 'alpine', shell: '/bin/sh') {
-      sh '''#!/bin/sh
-      KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
-      '''
-    }
 
     if ( currentBuild.result == 'SUCCESS' ) {
       stage('Merge dev to prod') {
@@ -125,6 +122,7 @@ node('master') {
     }
   }
 }
+
 
 
 
