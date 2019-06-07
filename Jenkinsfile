@@ -117,33 +117,20 @@ podTemplate(
 
 node('master') {
 
-  stage('Clean-up ACI and kubernetes') {
+  stage('Clean-up ACI') {
     sh '''#!/bin/bash
     // ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
     echo 'need to delete EPG'
     '''
-<<<<<<< HEAD
-  
-    container(name: 'alpine', shell: '/bin/sh') {
-      sh '''#!/bin/sh
-      KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
-      '''
-    }
-=======
->>>>>>> dev
 
     if ( currentBuild.result == 'SUCCESS' ) {
       stage('Merge dev to prod') {
         withCredentials([usernamePassword(credentialsId: '75f66db3-7769-4eb9-b8ae-9090f54997e0', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
           sh('''
-<<<<<<< HEAD
-              git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
-=======
               export https_proxy=http://proxy.esl.cisco.com:80
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git checkout master
               git merge dev
->>>>>>> dev
               git push origin dev:master
           ''')
         }
