@@ -104,6 +104,7 @@ podTemplate(
           if ( ret == 'fail' ) {
             currentBuild.result = 'FAILURE'
           }
+          else { currentBuild.result = 'SUCCESS'}
           sh '''#!/bin/sh
           // KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
           echo 'need to delete namespace'
@@ -118,7 +119,8 @@ node('master') {
 
   stage('Clean-up ACI') {
     sh '''#!/bin/bash
-    ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
+    // ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
+    echo 'need to delete EPG'
     '''
 
     if ( currentBuild.result == 'SUCCESS' ) {
