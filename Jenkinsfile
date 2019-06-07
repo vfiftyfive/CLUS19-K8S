@@ -131,7 +131,7 @@ node('master') {
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git checkout master
               git merge dev
-              git push origin dev:master
+              git push origin master
           ''')
         }
       }
