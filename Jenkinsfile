@@ -78,20 +78,6 @@ podTemplate(
           KUBECONFIG=`pwd`/Helper/config kubectl create namespace devbuild
           apk update && apk add py-pip jq
           pip install awscli
-          VAULT_TOKEN=\$(curl --request POST \
-          --data '{"role_id": "304cd485-6b5f-81e1-392d-76daa2dbdb83", "secret_id": "2a3e92ab-2908-c783-7076-5b85f851424c"}' \
-          http://10.51.48.8:8200/v1/auth/approle/login | jq '.auth.client_token' | tr -d '"')
-          ACCKEY=\$(curl \
-          -H "X-Vault-Token: \$VAULT_TOKEN" \
-          -X GET \
-          http://10.51.48.8:8200/v1/aws/awskeys | jq '.data.acckey' | tr -d '"' )
-          SECKEY=\$(curl \
-          -H "X-Vault-Token: \$VAULT_TOKEN" \
-          -X GET \
-          http://10.51.48.8:8200/v1/aws/awskeys | jq '.data.seckey' | tr -d '"' )
-          aws configure set aws_access_key_id \$ACCKEY
-          aws configure set aws_secret_access_key \$SECKEY
-          aws configure set default.region us-west-1
           DOCKERPASSWD=\$(aws ecr get-login --no-include-email | cut -d " " -f 6)
           KUBECONFIG=`pwd`/Helper/config kubectl create secret docker-registry ecr --docker-username=AWS --docker-password=\$DOCKERPASSWD --docker-server=506539650117.dkr.ecr.us-west-1.amazonaws.com --docker-email=nvermand@cisco.com
           KUBECONFIG=`pwd`/Helper/config kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "ecr"}]}'
