@@ -46,6 +46,9 @@ podTemplate(
       envFrom:
         - configMapRef:
             name: proxy
+      volumeMounts:
+        - name: aws-secret
+          mountPath: /root/.aws/
     restartPolicy: Never
     volumes:
       - name: docker-config
