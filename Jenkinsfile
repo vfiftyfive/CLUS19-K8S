@@ -78,8 +78,7 @@ podTemplate(
           KUBECONFIG=`pwd`/Helper/config kubectl create namespace devbuild
           apk update && apk add py-pip
           pip install awscli
-          aws configure set aws_access_key_id AKIAIH5KAL2QWJTOKBDA
-          aws configure set aws_secret_access_key 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
+          
           aws configure set default.region us-west-1
           DOCKERPASSWD=\$(aws ecr get-login --no-include-email | cut -d " " -f 6)
           KUBECONFIG=`pwd`/Helper/config kubectl create secret docker-registry ecr --docker-username=AWS --docker-password= \$DOCKERPASSWD --docker-server=506539650117.dkr.ecr.us-west-1.amazonaws.com --docker-email=nvermand@cisco.com
