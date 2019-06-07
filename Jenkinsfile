@@ -105,7 +105,8 @@ podTemplate(
             currentBuild.result = 'FAILURE'
           }
           sh '''#!/bin/sh
-          KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
+          // KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
+          echo 'need to delete namespace'
           '''
         }
       }
