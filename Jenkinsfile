@@ -48,7 +48,7 @@ podTemplate(
             name: proxy
       volumeMounts:
         - name: aws-secret
-          mountPath: /root/.aws/
+          mountPath: /root/.awsRO
     restartPolicy: Never
     volumes:
       - name: docker-config
@@ -78,6 +78,8 @@ podTemplate(
           curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.12.8/bin/linux/amd64/kubectl
           chmod +x `pwd`/kubectl
           mv `pwd`/kubectl /bin/kubectl
+          mkdir /root/.aws
+          cp /root/.awsRO/credentials /root/.aws/credentials
           KUBECONFIG=`pwd`/Helper/config kubectl create namespace devbuild
           apk update && apk add py-pip jq
           pip install awscli
