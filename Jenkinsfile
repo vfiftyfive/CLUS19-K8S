@@ -89,25 +89,36 @@ podTemplate(
           KUBECONFIG=`pwd`/Helper/config kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "ecr"}]}'
           KUBECONFIG=`pwd`/Helper/config kubectl annotate namespace devbuild opflex.cisco.com/endpoint-group='{"tenant":"kubecluster_demo_01","app-profile":"kubernetes","name":"devBuild"}'
           KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
-          sleep 90
+          sleep 30
           """
         }
       }
 
       stage('Run Integration Test') {
         container(name: 'alpine', shell: '/bin/sh') {
+          def timer = 0
           def ret= sh(
             script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
             returnStdout: true
           ).trim()
           println ret
-          if ( ret == 'fail' ) {
+          while (ret == 'fail') {
+            ret= sh(
+            script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
+            returnStdout: true
+            ).trim()
+            sleep 5
+            timer ++
+            if ( timer == 35 ) {
+              ret = 'giveup'
+            }
+          }
+          if ( ret == 'giveup' ) {
             currentBuild.result = 'FAILURE'
           }
           else { currentBuild.result = 'SUCCESS'}
           sh '''#!/bin/sh
-          // KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
-          echo 'need to delete namespace'
+          KUBECONFIG=$WORKSPACE/Helper/config kubectl delete namespace devbuild
           '''
         }
       }
@@ -119,19 +130,19 @@ node('master') {
 
   stage('Clean-up ACI') {
     sh '''#!/bin/bash
-    // ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
-    echo 'need to delete EPG'
+    ansible-playbook $WORKSPACE/../../ansible/aci_del.yaml
     '''
-
     if ( currentBuild.result == 'SUCCESS' ) {
       stage('Merge dev to prod') {
-        withCredentials([usernamePassword(credentialsId: '75f66db3-7769-4eb9-b8ae-9090f54997e0', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){    
+        withCredentials([usernamePassword(credentialsId: '75f66db3-7769-4eb9-b8ae-9090f54997e0', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
+          checkout scm
           sh('''
+              git checkout dev
               export https_proxy=http://proxy.esl.cisco.com:80
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git checkout master
               git merge dev
-              git push origin dev:master
+              git push origin master
           ''')
         }
       }
