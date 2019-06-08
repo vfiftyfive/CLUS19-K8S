@@ -101,12 +101,12 @@ podTemplate(
             script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
             returnStdout: true
           ).trim()
-          println ret
           while (ret == 'fail') {
             ret= sh(
             script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
             returnStdout: true
             ).trim()
+            println ret
             sleep 5
             timer ++
             if ( timer == 35 ) {
@@ -138,6 +138,7 @@ node('master') {
           checkout scm
           sh('''
               git checkout dev
+              git pull
               export https_proxy=http://proxy.esl.cisco.com:80
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git checkout master
