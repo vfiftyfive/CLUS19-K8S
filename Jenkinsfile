@@ -89,19 +89,30 @@ podTemplate(
           KUBECONFIG=`pwd`/Helper/config kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "ecr"}]}'
           KUBECONFIG=`pwd`/Helper/config kubectl annotate namespace devbuild opflex.cisco.com/endpoint-group='{"tenant":"kubecluster_demo_01","app-profile":"kubernetes","name":"devBuild"}'
           KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
-          sleep 120
           """
         }
       }
 
       stage('Run Integration Test') {
         container(name: 'alpine', shell: '/bin/sh') {
+          def timer = 0
           def ret= sh(
             script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
             returnStdout: true
           ).trim()
           println ret
-          if ( ret == 'fail' ) {
+          while (ret == 'fail') {
+            ret= sh(
+            script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
+            returnStdout: true
+            ).trim()
+            sleep 30
+            timer ++
+            if ( timer == 5 ) {
+              ret = 'giveup'
+            }
+          }
+          if ( ret == 'giveup' ) {
             currentBuild.result = 'FAILURE'
           }
           else { currentBuild.result = 'SUCCESS'}
