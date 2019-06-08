@@ -123,14 +123,11 @@ node('master') {
 
     if ( currentBuild.result == 'SUCCESS' ) {
       stage('Merge dev to prod') {
-        withCredentials([usernamePassword(credentialsId: '75f66db3-7769-4eb9-b8ae-9090f54997e0', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){
-          checkout scm    
+        withCredentials([usernamePassword(credentialsId: '75f66db3-7769-4eb9-b8ae-9090f54997e0', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){  
           sh('''
               export https_proxy=http://proxy.esl.cisco.com:80
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
-              git checkout master
-              git merge dev
-              git push origin master
+              git checkout dev
           ''')
         }
       }
