@@ -89,6 +89,7 @@ podTemplate(
           KUBECONFIG=`pwd`/Helper/config kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "ecr"}]}'
           KUBECONFIG=`pwd`/Helper/config kubectl annotate namespace devbuild opflex.cisco.com/endpoint-group='{"tenant":"kubecluster_demo_01","app-profile":"kubernetes","name":"devBuild"}'
           KUBECONFIG=`pwd`/Helper/config kubectl apply -f `pwd`/redis-master-controller.json -f `pwd`/redis-master-service.json -f `pwd`/redis-slave-controller.json -f `pwd`/redis-slave-service.json -f `pwd`/guestbook-controller.yaml
+          sleep 10
           """
         }
       }
@@ -106,9 +107,9 @@ podTemplate(
             script: 'chmod u+x $WORKSPACE/Helper/kube.sh && KUBECONFIG=$WORKSPACE/Helper/config $WORKSPACE/Helper/kube.sh',
             returnStdout: true
             ).trim()
-            sleep 30
+            sleep 5
             timer ++
-            if ( timer == 5 ) {
+            if ( timer == 35 ) {
               ret = 'giveup'
             }
           }
