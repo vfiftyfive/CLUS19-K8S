@@ -127,7 +127,7 @@ node('master') {
           sh('''
               export https_proxy=http://proxy.esl.cisco.com:80
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
-              git checkout dev
+              git branch
           ''')
         }
       }
